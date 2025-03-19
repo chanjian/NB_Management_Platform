@@ -16,9 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from web.views import account,level,customer,policy,my_order
-
+from web.views import account,level,customer,policy,my_order,upload,transaction
+from django.conf import settings
+from django.urls import path, re_path
+from django.views.static import serve
 urlpatterns = [
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}, name='media'),
     # path('admin/', admin.site.urls),
     path('login/', account.login, name="login"),
     path('sms/login/', account.sms_login, name="sms_login"),
@@ -44,8 +47,24 @@ urlpatterns = [
     path('policy/add/', policy.policy_add, name="policy_add"),
     path('policy/edit/<int:pk>/', policy.policy_edit, name="policy_edit"),
     path('policy/delete/', policy.policy_delete, name="policy_delete"),
+    path('policy/upload/',policy.policy_upload,name='policy_upload'),
 
     path('my/order/list/', my_order.my_order_list, name="my_order_list"),
     path('my/order/add/', my_order.my_order_add, name="my_order_add"),
     path('my/order/cancel/<int:pk>/', my_order.my_order_cancel, name="my_order_cancel"),
+
+    path('upload/list1/',upload.upload_list1,name='upload_list1'),
+    path('upload/list2/',upload.upload_list2,name='upload_list2'),
+    path('upload/list3/',upload.upload_list3,name='upload_list3'),
+    path('upload/list4/',upload.upload_list4,name='upload_list4'),
+
+    path('city/list/',upload.city_list,name='city_list'),
+    path('city/list2/',upload.city_list2,name='city_list'),
+
+    path('my/transaction/list/',transaction.my_transaction_list,name='my_transaction_list')
+
 ]
+
+from django.conf.urls.static import static
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

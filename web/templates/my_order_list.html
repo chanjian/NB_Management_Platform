@@ -2,6 +2,20 @@
 
 {% load static %}
 
+{% block css %}
+    <style>
+        .top-message-error {
+            position: fixed;
+            left: 0;
+            right: 0;
+            width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            top: 0;
+        }
+    </style>
+{% endblock %}
+
 
 {% block content %}
     <div style="margin-bottom: 5px">
@@ -9,6 +23,20 @@
             <span class="glyphicon glyphicon-plus-sign"></span> 创建订单
         </a>
     </div>
+
+     {% if messages %}
+        <div class="top-message-error">
+            {% for obj in messages %}
+                <div class="alert alert-{{ obj.level_tag }}">
+                    {{ obj.message }}
+                </div>
+            {% endfor %}
+
+        </div>
+    {% endif %}
+
+
+
 
     <table class="table table-bordered">
         <thead>
@@ -31,7 +59,7 @@
                 <td>{{ row.count }}</td>
                 <td>{{ row.real_price }}（{{ row.price }}）</td>
                 <td>{{ row.old_view_count }}</td>
-                <td>{{ row.create_datetime }}</td>
+                <td>{{ row.create_datetime|date:"Y-m-d H:i:s" }}</td>
                 <td>{{ row.get_status_display }}</td>
                 <td>
                     {% if row.status == 1 %}
@@ -47,4 +75,14 @@
         {{ pager.html }}
     </ul>
 
+{% endblock %}
+
+
+
+{% block js %}
+    <script>
+        setTimeout(function () {
+            $(".top-message-error").addClass('hide');
+        }, 5000);
+    </script>
 {% endblock %}

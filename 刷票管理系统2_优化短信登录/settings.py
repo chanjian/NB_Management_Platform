@@ -118,7 +118,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'zh-hans'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'  # 设置默认时区为北京时间
 
 USE_I18N = True
 
@@ -177,6 +178,19 @@ NB_MENU = {
             ]
         },
 
+{
+            'text': "上传文件",
+            'icon': "fa-bed",
+            'children': [
+                {'text': "上传文件1", 'url': "/upload/list1/", 'name': "policy_list1"},
+                {'text': "上传文件2", 'url': "/upload/list2/", 'name': "policy_list2"},
+                {'text': "上传文件3", 'url': "/upload/list3/", 'name': "policy_list3"},
+                {'text': "上传文件4", 'url': "/upload/list4/", 'name': "policy_list3"},
+                {'text': "城市列表", 'url': "/city/list/", 'name': "city_list"},
+                {'text': "城市列表2", 'url': "/city/list2/", 'name': "city_list"},
+            ]
+        },
+
     ],
     'CUSTOMER': [
         {
@@ -184,6 +198,7 @@ NB_MENU = {
             'icon': "fa-bed",
             'children': [
                 {'text': "订单管理", 'url': "/my/order/list/", 'name': "my_order_list"},
+                {'text': "我的交易记录", 'url': "/my/transaction/list/", 'name': "my_transaction_list"},
             ]
         },
     ],
@@ -192,6 +207,7 @@ NB_MENU = {
 NB_PERMISSION_PUBLIC = {
     # "home": {"text": "主页", 'parent': None},
     "logout": {"text": "注销", 'parent': None},
+    "media": {"text": "用户上传的媒体文件", 'parent': None},
 }
 NB_PERMISSION = {
     "ADMIN": {
@@ -210,25 +226,47 @@ NB_PERMISSION = {
         "customer_delete": {"text": "删除客户", 'parent': 'customer_list'},
         "customer_reset": {"text": "重置客户密码", 'parent': 'customer_list'},
         "customer_charge": {"text": "客户交易记录", 'parent': 'customer_list'},
-"customer_charge_add": {"text": "添加客户交易记录", 'parent': 'customer_list'},
+        "customer_charge_add": {"text": "添加客户交易记录", 'parent': 'customer_list'},
 
 
         "policy_list": {"text": "价格策略", 'parent': None},
         "policy_add": {"text": "创建价格策略", 'parent': 'policy_list'},
         "policy_edit": {"text": "编辑价格策略", 'parent': 'policy_list'},
         "policy_delete": {"text": "删除价格策略", 'parent': 'policy_list'},
+        "policy_upload": {"text": "批量上传价格策略", 'parent': 'policy_list'},
+
+        "upload_list": {"text": "上传文件", 'parent': None},
+        "upload_list1": {"text": "上传文件1", 'parent': 'upload_list'},
+        "upload_list2": {"text": "上传文件2", 'parent': 'upload_list'},
+        "upload_list3": {"text": "上传文件3", 'parent': 'upload_list'},
+        "upload_list4": {"text": "上传文件4", 'parent': 'upload_list'},
+        "city_list": {"text": "城市列表", 'parent': 'upload_list'},
+        "city_list2": {"text": "城市列表2", 'parent': 'upload_list'},
     },
     "CUSTOMER": {
         "my_order_list": {"text": "订单列表", 'parent': None},
         "my_order_add": {"text": "订单列表", 'parent': 'my_order_list'},
         "my_order_cancel": {"text": "订单列表", 'parent': 'my_order_list'},
+        "my_transaction_list": {"text": "订单列表", 'parent': None},
+
     }
 }
 
 QUEUE_TASK_NAME = "YANG_TASK_QUEUE"
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+MESSAGE_DANGER_TAG = 50
+
+MESSAGE_TAGS = {
+    MESSAGE_DANGER_TAG:'danger',
+}
 
 # SECRET_ID = '123'
 # SECRET_key = '123'
+
+import os
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
 
 try:
     from local_settings import *

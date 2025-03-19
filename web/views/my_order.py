@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django import forms
 from django.core.exceptions import ValidationError
@@ -11,8 +12,17 @@ from django_redis import get_redis_connection
 from django.conf import settings
 from django.db import transaction
 
+from django.contrib import messages
+from django.contrib.messages.api import get_messages
+
 
 def my_order_list(request):
+
+
+    messages = get_messages(request)
+    for msg in messages:
+        print(msg)
+
     # 获取我的订单，当前登录的客户id
     queryset = models.Order.objects.filter(customer_id=request.nb_user.id, active=1).order_by('-id')
     pager = Pagination(request, queryset)
@@ -20,6 +30,7 @@ def my_order_list(request):
 
 
 class MyOrderModelForm(BootStrapForm, forms.ModelForm):
+
     class Meta:
         model = models.Order
         fields = ["url", 'count']
@@ -145,7 +156,40 @@ def my_order_add(request):
 
 
 
-def my_order_cancel(reqeust, pk):
+def my_order_cancel(request, pk):
     """ 撤单"""
-    # 。。。。
-    return redirect('/my/order/list/')
+
+    order_object = models.Order.objects.filter(id=pk,active=1,status=1,customer=request.nb_user.id).first()
+    if not order_object:
+        messages.add_message(reqeust,settings.MESSAGE_DANGER_TAG,'订单不存在')
+        return redirect('/my/order/list/')
+
+    try:
+        with transaction.atomic():
+            models.Customer.objects.filter(id=request.nb_user.id).select_for_update().first()
+
+            # 1.订单状态变化为 (5, "已撤单"),
+            models.Order.objects.filter(id=pk, active=1, status=1, customer=request.nb_user.id).update(status=5)
+
+            # 2.归还余额
+            models.Customer.objects.filter(id=request.nb_user.id).update(balance=F("balance") + order_object.real_price)
+
+            # 3.交易记录
+            models.TransactionRecord.objects.create(
+                charge_type=5,
+                customer_id=request.nb_user.id,
+                amount=order_object.real_price,
+                order_oid=order_object.oid
+            )
+
+            # 撤单成功了
+            messages.add_message(request, messages.SUCCESS, "撤单成功")
+            return redirect('/my/order/list/')
+
+    except Exception as e:
+        messages.add_message(request,settings.MESSAGE_DANGER_TAG,'撤单失败，{}'.format(str(e)))
+        return redirect('/my/order/list/')
+
+
+
+

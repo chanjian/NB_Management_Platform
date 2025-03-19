@@ -54,6 +54,7 @@ class Order(ActiveBaseModel):
         (2, "正在执行"),
         (3, "已完成"),
         (4, "失败"),
+        (5, "已撤单"),
     )
     status = models.SmallIntegerField(verbose_name="状态", choices=status_choices, default=1)
 
@@ -92,4 +93,25 @@ class TransactionRecord(ActiveBaseModel):
     order_oid = models.CharField(verbose_name="订单号", max_length=64, null=True, blank=True, db_index=True)
     create_datetime = models.DateTimeField(verbose_name="交易时间", auto_now_add=True)
     memo = models.TextField(verbose_name="备注", null=True, blank=True)
+
+class Boss(models.Model):
+    """用于测试上传功能--Form"""
+    name = models.CharField(verbose_name='姓名',max_length=32)
+    age = models.IntegerField(verbose_name='年龄')
+    img = models.CharField(verbose_name='头像',max_length=128)
+
+class CityModelFrom(models.Model):
+    """用于测试上传功能---ModelForm"""
+    name = models.CharField(verbose_name='名称',max_length=32)
+    count = models.IntegerField(verbose_name='人口')
+    #本质上数据库也是CharField，自动保存数据
+    img = models.FileField(verbose_name='Logo',max_length=128,upload_to='city')
+
+class CityForm(models.Model):
+    """用于测试上传功能---ModelForm"""
+    name = models.CharField(verbose_name='名称',max_length=32)
+    count = models.IntegerField(verbose_name='人口')
+    #本质上数据库也是CharField，自动保存数据
+    img = models.FileField(verbose_name='Logo',max_length=128)
+    url = models.CharField(verbose_name='url值',max_length=256,null=True,blank=True)
 

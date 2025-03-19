@@ -13,11 +13,23 @@
 {% endblock %}
 
 {% block content %}
-    <div style="margin-bottom: 5px" class="clearfix">
-        <button class="btn btn-success" id="btnAdd">
-            <span class="glyphicon glyphicon-plus-sign"></span> 新建
-        </button>
-    </div>
+{#    <div style="margin-bottom: 5px" class="clearfix">#}
+{#        <button class="btn btn-success" id="btnAdd">#}
+{#            <span class="glyphicon glyphicon-plus-sign"></span> 新建#}
+{#        </button>#}
+{#    </div>#}
+
+    <div class="right">
+            <form class="form-inline" method="get">
+                <div class="form-group">
+                    <input name="keyword" type="text" class="form-control" placeholder="请输入关键字" value="{{ keyword }}">
+                </div>
+                <button type="submit" class="btn btn-default">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </form>
+        </div>
+
 
      <!-- 日期筛选表单 -->
     <form method="get"  class="form-inline" style="margin-bottom: 20px;">
@@ -126,31 +138,31 @@
 
 
 
-{% block js %}
-    <script>
-        $(function () {
-            $("#btnAdd").click(function () {
-                $('#addModal').modal('show');
-            });
+{#{% block js %}#}
+{#    <script>#}
+{#        $(function () {#}
+{#            $("#btnAdd").click(function () {#}
+{#                $('#addModal').modal('show');#}
+{#            });#}
 {##}
-            $("#btnAddSubmit").click(function () {
-                $(".error-message").empty();
-                $.ajax({
-                    url: "{% url 'customer_charge_add' pk=pk %}",
-                    type: "POST",
-                    data: $("#addForm").serialize(),
-                    dataType: "JSON",
-                    success: function (res) {
-                        if (res.status) {
-                            window.location.reload();
-                        } else {
-                            $.each(res.detail, function (k, v) {
-                                $("#id_" + k).next().text(v[0]);
-                            })
-                        }
-                    }
-                })
-            });
-        })
-    </script>
-{% endblock %}
+{#            $("#btnAddSubmit").click(function () {#}
+{#                $(".error-message").empty();#}
+{#                $.ajax({#}
+{#                    url: "{% url 'customer_charge_add' pk=pk %}",#}
+{#                    type: "POST",#}
+{#                    data: $("#addForm").serialize(),#}
+{#                    dataType: "JSON",#}
+{#                    success: function (res) {#}
+{#                        if (res.status) {#}
+{#                            window.location.reload();#}
+{#                        } else {#}
+{#                            $.each(res.detail, function (k, v) {#}
+{#                                $("#id_" + k).next().text(v[0]);#}
+{#                            })#}
+{#                        }#}
+{#                    }#}
+{#                })#}
+{#            });#}
+{#        })#}
+{#    </script>#}
+{#{% endblock %}#}
